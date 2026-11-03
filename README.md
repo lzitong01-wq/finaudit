@@ -31,7 +31,10 @@ pip install -r requirements.txt      # 可选：pypdf（PDF 文本层）、rapid
 
 ### 1.2 一键跑通
 
+以下命令均在 `code/` 下执行（`demo.sh` / `demo.ps1` 就在该目录）：
+
 ```bash
+cd code
 bash demo.sh                                        # Git Bash / Linux / macOS
 powershell -ExecutionPolicy Bypass -File demo.ps1    # Windows PowerShell
 ```
@@ -211,7 +214,7 @@ code/
   tools/                     夹具生成器 + 三套浏览器探针
   demo.sh / demo.ps1         一键复现脚本
   requirements.txt           可选依赖
-out/                         运行输出（每次运行一个独立目录）
+out/                         运行输出（生成物，已被 .gitignore 排除，不进仓库）
 ```
 
 `tools/` 内容：
@@ -284,7 +287,7 @@ out/                         运行输出（每次运行一个独立目录）
 契约校验        20/20 项通过（Claim / VerificationResult / Calculation 逐项真实校验，
                 不合格项会写进 S9 并阻断放行）
 PDF 路径        pypdf 6.21.4，demo01_pdf 端到端通过
-扫描件路径      RapidOCR，OCR 端到端通过（约 130 秒）
+扫描件路径      RapidOCR，OCR 端到端通过（实测约 2 分钟）
 长报告抽取      覆盖 6,000 字符分块与重叠边界
 期间口径        年度/季度/半年/时点/区间及相对表头映射，比较列不沿用当前期间
 失败路径        真实模型失败不回退夹具金标准；模型 0 条主张时不静默补答
