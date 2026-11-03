@@ -200,4 +200,9 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    from .llm import LLMError
+    try:
+        sys.exit(main())
+    except (ValueError, LLMError) as exc:
+        print(f"错误：{exc}", file=sys.stderr)
+        sys.exit(2)

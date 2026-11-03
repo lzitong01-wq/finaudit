@@ -17,7 +17,7 @@ from collections import Counter
 from decimal import Decimal
 from pathlib import Path
 
-from . import __version__, contract, formulas, rules
+from . import __version__, contract, formulas, inputs, rules
 from .agents import (AuditorAgent, CalculatorAgent, Ctx, ExtractorAgent,
                      ParserAgent, ReporterAgent, RetrieverAgent, Supervisor,
                      VerifierAgent, assert_write, record_handoff)
@@ -1087,6 +1087,21 @@ def _parse_one(m: dict, records: list[dict], fixtures: Path, alloc: IdAllocator,
     return blocks, rows
 
 
+def _read_json(path: Path, label: str):
+    """读输入 JSON，把「文件不在」「不是合法 JSON」翻译成人看得懂的话。"""
+    try:
+        text = path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        raise ValueError(f"夹具缺文件：{label}（应在 {path.parent} 下）") from None
+    except UnicodeDecodeError as exc:
+        raise ValueError(f"{label} 不是 UTF-8 文本：{exc}") from exc
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"{label} 不是合法 JSON：第 {exc.lineno} 行第 {exc.colno} 列——{exc.msg}") from exc
+
+
 def _clear_previous_outputs(out: Path) -> list[str]:
     """清掉上一次运行留在 o1/o2/o3 里的产物，返回被清掉的文件名。
 
@@ -1123,18 +1138,25 @@ def _run_stages(ctx: Ctx, events=None) -> dict:
     io = ctx.data["io"]
     fixtures, out = io["fixtures"], io["out"]
     llm_config = io.get("llm_config")
+
+    # 输入先过契约：字段写错在入口就说清楚，不带着错的输入跑出半份交付物。
+    # 放在清理旧产物之前——否则一次笔误会先把上次的审计包清掉再失败。
+    task = _read_json(fixtures / "task_order.json", "task_order.json")
+    materials_doc = _read_json(fixtures / "materials.json", "materials.json")
+    input_errors = inputs.check_all(task, materials_doc)
+    if input_errors:
+        raise ValueError("夹具输入不合契约：\n  - " + "\n  - ".join(input_errors))
+
     out.mkdir(parents=True, exist_ok=True)
     cleared = _clear_previous_outputs(out)
 
-    task = json.loads((fixtures / "task_order.json").read_text(encoding="utf-8"))
-    materials_doc = json.loads((fixtures / "materials.json").read_text(encoding="utf-8"))
     materials = materials_doc["materials"] if isinstance(materials_doc, dict) else materials_doc
     # 研报由材料登记的 role 判定（不按编号假设）；可靠性定级由 role 派生
     report_id = report_material_id(materials)
     ranks = material_rank(materials, report_id)
     ctx.data["report_material_id"] = report_id
     ctx.data["material_rank"] = ranks
-    claims_gt = json.loads((fixtures / "claims_gt.json").read_text(encoding="utf-8"))
+    claims_gt = _read_json(fixtures / "claims_gt.json", "claims_gt.json")
 
     alloc = IdAllocator()
     task_id = task["task_id"]
@@ -1412,15 +1434,26 @@ def _run_stages(ctx: Ctx, events=None) -> dict:
     # 运行配置（O1 可复现性声明）：模型/prompt/材料形态/契约版本/LLM 健康
     llm_ev = next((e["payload"] for e in reversed(events.events)
                    if e["event_type"] == "LLM调用"), {})
+    # 只统计真正解析过的材料：登记了但文件不在的，不能算进「输入形态 md×3」，
+    # 否则报告看起来三份齐备，实际只读到两份。
+    usable_ids = {r["material_id"] for r in records if r["status"] == "已登记"}
+    unavailable = [{"material_id": r["material_id"],
+                    "source_file_ref": r.get("source_file_ref"),
+                    "reason": r.get("failure_reason") or "未登记"}
+                   for r in records if r["status"] != "已登记"]
     fmt_counts: dict[str, int] = {}
     for m in materials:
-        fmt_counts[m.get("format", "md")] = fmt_counts.get(m.get("format", "md"), 0) + 1
+        if m["material_id"] not in usable_ids:
+            continue
+        fmt = m.get("format", "md")
+        fmt_counts[fmt] = fmt_counts.get(fmt, 0) + 1
     run_config = {
         "provider": client.config.provider,
         "model": client.config.model,
         "prompt_version": llm_ev.get("prompt_version", "—"),
         "prompt_hash": llm_ev.get("prompt_hash", ""),
-        "input_formats": "、".join(f"{k}×{v}" for k, v in sorted(fmt_counts.items())),
+        "input_formats": "、".join(f"{k}×{v}" for k, v in sorted(fmt_counts.items())) or "—",
+        "unavailable_materials": unavailable,
         "contract_version": report.CONTRACT_VERSION,
         "llm_failure": llm_ev.get("failure_kind") or "",
         "llm_retry": llm_ev.get("retry_count", 0),

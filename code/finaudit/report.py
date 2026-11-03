@@ -143,6 +143,11 @@ def _clip(text: str, limit: int) -> str:
     return text if len(text) <= limit else text[:limit] + "…"
 
 
+def _or_dash(value) -> str:
+    """None / 空串渲染成破折号：人读报告里出现字面量 None 是硬伤。"""
+    return "—" if value is None or value == "" else str(value)
+
+
 def write_o1(out: Path, task: dict, items: list[dict], severity_map: dict,
              run_config: dict | None = None, outputs: dict | None = None) -> Path:
     o1 = out / "o1"
@@ -159,8 +164,8 @@ def write_o1(out: Path, task: dict, items: list[dict], severity_map: dict,
     lines.append("")
     lines.append(f"- 任务：{task['task_id']}　主体：{task.get('subject_alias')}　"
                  f"期间：{(task.get('period_scope') or {}).get('label', '')}")
-    lines.append(f"- 数据截止点：{task.get('data_cutoff')}　边界：{task.get('boundary_statement')}")
-    lines.append("- O1 结构为项目内部暂定结构：无官方体裁/模板/篇幅要求可对齐，按内部暂定结构交付。")
+    lines.append(f"- 数据截止点：{_or_dash(task.get('data_cutoff'))}　"
+                 f"边界：{_or_dash(task.get('boundary_statement'))}")
 
     from . import rules as rules_mod
     rule_total = len(rules_mod.RULES)
@@ -174,6 +179,14 @@ def write_o1(out: Path, task: dict, items: list[dict], severity_map: dict,
         lines.append(f"| 主张拆解模型 | {rc.get('model')}（provider={rc.get('provider')}） |")
         lines.append(f"| 提示词版本 | {rc.get('prompt_version')}（SHA 前 12 位 {rc.get('prompt_hash', '')[:12]}） |")
         lines.append(f"| 材料输入形态 | {rc.get('input_formats')} |")
+        unavailable = rc.get("unavailable_materials") or []
+        if unavailable:
+            detail = "、".join(
+                f"{u.get('material_id')}（{_or_dash(u.get('source_file_ref'))}，{u.get('reason')}）"
+                for u in unavailable)
+            lines.append(f"| 材料可用性 | **{len(unavailable)} 份未解析**：{_cell(detail)} |")
+        else:
+            lines.append("| 材料可用性 | 登记材料全部解析 |")
         lines.append(f"| 数据契约 | {rc.get('contract_version')} |")
         lines.append(f"| 判定引擎 | 确定性规则 {rule_total} 条 + 确定性公式引擎"
                      f"（LLM 不参与判定与计算） |")
@@ -327,8 +340,12 @@ def write_o1(out: Path, task: dict, items: list[dict], severity_map: dict,
             lines.append(f"  - {err}")
         release = (kl == 0 and al == 0 and failed == 0
                    and checked is not None and checks.get("passed") == checked)
+        # 材料没读全时结论本身仍成立（判定是诚实的），但适用范围收窄，放行必须带条件说明
+        unavailable = rc.get("unavailable_materials") or []
+        caveat = (f"，但 {len(unavailable)} 份登记材料未解析，结论仅覆盖已读到的材料"
+                  if unavailable and release else "")
         lines.append(f"- 放行：**{'放行' if release else '阻断'}**"
-                     f"（两项扫描零命中、契约校验全部通过才放行；否则转人工处置）。")
+                     f"（两项扫描零命中、契约校验全部通过才放行；否则转人工处置）{caveat}。")
     lines.append("")
 
     path.write_text("\n".join(lines), encoding="utf-8")
@@ -447,6 +464,11 @@ def write_o3(out: Path, task: dict, records: list[dict], items: list[dict],
     g_path = o3 / "G-reproduce.md"
     fixture_name = rc.get("fixtures", "demo01")
     py_ver = rc.get("python", "3.13")
+    g_unavailable = ""
+    if rc.get("unavailable_materials"):
+        names = "、".join(f"{u.get('material_id')}（{u.get('reason')}）"
+                          for u in rc["unavailable_materials"])
+        g_unavailable = f"另有 {len(rc['unavailable_materials'])} 份登记材料未解析：{names}。"
     g_path.write_text(
         "\n".join([
             "# 复现说明（G 组）",
@@ -456,7 +478,7 @@ def write_o3(out: Path, task: dict, records: list[dict], items: list[dict],
             f"--out ../out/{fixture_name}`（演示记录：`python -m finaudit.demo "
             f"--fixtures fixtures/{fixture_name} --out ../out/{fixture_name}`，输出 D0–D8 九步）",
             f"3. 本次材料输入形态：{rc.get('input_formats', '—')}；"
-            f"数据契约 {rc.get('contract_version', '—')}。",
+            f"数据契约 {rc.get('contract_version', '—')}。{g_unavailable}",
             "4. 确定性：ID 分配与处理顺序只依赖输入；时间戳不参与复现比对；"
             "管线内置隔离重跑（独立号段、不发事件）并比对状态签名。",
             "5. JSON 中的 Decimal 以字符串序列化以保精度（合同允许 number；本实现取字符串）。",

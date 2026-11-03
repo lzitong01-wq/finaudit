@@ -128,4 +128,11 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # 输入不合契约、材料缺失这类是可预期的使用错误，给一行结论即可；
+    # 抛整段回溯只会把真正的原因埋在第 30 行。
+    from .llm import LLMError
+    try:
+        sys.exit(main())
+    except (ValueError, LLMError) as exc:
+        print(f"错误：{exc}", file=sys.stderr)
+        sys.exit(2)

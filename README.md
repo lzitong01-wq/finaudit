@@ -62,6 +62,9 @@ FINAUDIT_OCR_TEST=1 bash demo.sh
 内置夹具四组：`demo01`（Markdown）、`demo01_pdf`（PDF 文本层）、`demo01_scan`（扫描件）、
 `bench`（300 条规模基准）。
 
+退出码：`0` 完成；`1` 校验不通过（`verify` 哈希不符、`doctor` 探活失败）；
+`2` 输入不合契约或运行中止。后两类只打印一行结论，不抛回溯。
+
 ### 1.4 本地界面
 
 ```bash
@@ -115,6 +118,21 @@ python -m finaudit.cli run --fixtures fixtures/demo01 --out ../out/demo01_llm --
 | `materials.json` | 材料登记与授权范围；`publish_date`（可选）为披露日，早于它的数据截止点会把该材料整份排除出证据 |
 | `task_order.json` | 任务单（主体化名、期间、数据截止点） |
 | `claims_gt.json` | 金标准主张清单，仅离线评测使用 |
+
+两份登记文件在入口就过契约校验（`finaudit/inputs.py`），字段写错不会被静默忽略：
+
+| 文件 | 必填 | 可选 |
+|---|---|---|
+| `task_order.json` | `task_id`、`subject_alias`、`period_scope`、`data_cutoff` | `contract_version`、`materials`、`boundary_statement`、`missing_items` |
+| `materials[]` 每项 | `material_id`、`source_file_ref`、`role` | `format`（`md`/`pdf`/`scanned_pdf`）、`page_count`、`publish_date`、`ocr_blocks` |
+
+多写或拼错字段会直接报错并指出像哪个合法字段（`publishdate` → 是不是想写
+`publish_date`），不再是 `KeyError` 回溯、更不是静默失效。`data_cutoff` 是必填：
+没有它，「这条主张当时能不能核」无从判断，前视偏差过滤也无从生效。
+
+`source_file_ref` 指向的文件不存在时，研报缺失直接中止；**证据材料缺失不中止**，
+该材料登记为「无效」并在 O1 运行配置表的「材料可用性」一行点名，
+`input_formats` 只统计成功解析的材料，S9 的放行结论同时注明「结论仅覆盖已读到的材料」。
 
 **输出**（`out/<任务名>/`）：
 
@@ -185,11 +203,11 @@ LICENSE                      MIT 许可证
 启动研鉴.bat                  Windows 图形界面启动
 .github/workflows/tests.yml   CI：3.11 / 3.13 / 3.14 三档跑测试与端到端
 code/
-  finaudit/                  22 个模块（见第 5 节）
+  finaudit/                  23 个模块（见第 5 节）
   webui.py                   界面服务与接口
   web_page.py                页面模板（单文件 HTML + 内联 CSS/JS）
   fixtures/                  4 组夹具：demo01 / demo01_pdf / demo01_scan / bench
-  tests/                     21 个测试文件（项数以命令输出为准）
+  tests/                     22 个测试文件（项数以命令输出为准）
   tools/                     夹具生成器 + 三套浏览器探针
   demo.sh / demo.ps1         一键复现脚本
   requirements.txt           可选依赖
@@ -221,6 +239,7 @@ out/                         运行输出（每次运行一个独立目录）
 | `formulas.py` | 16 条公式 | `FORMULAS`、`compute(formula_id, inputs, params=None) -> dict`，失败抛 `FormulaError` |
 | `rules.py` | 规则引擎 | `evaluate(claim, ctx) -> dict{status, rule_ids, reason, suggestion, severity}` |
 | `contract.py` | 轻量结构校验 | `validate(obj, object_name) -> list[str]` |
+| `inputs.py` | 夹具输入契约（任务单与材料登记字段） | `check_task()`、`check_materials()`、`check_all()` |
 | `events.py` | 审计事件 | `EventLog(task_id, alloc, sink=None).emit(...) -> dict` |
 | `agents.py` | Agent 框架 | `ROLES`/`REGIONS`、`assert_read`/`assert_write`、`HANDOFFS`/`verify_handoff`、`Supervisor` |
 | `pipeline.py` | S0–S7 编排 | `run(fixtures_dir, out_dir, llm_config=None, on_event=None) -> dict` |
