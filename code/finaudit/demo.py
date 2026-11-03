@@ -127,13 +127,16 @@ def run_demo(fixtures: str | Path, out: str | Path, llm_config=None) -> dict:
     if sample:
         inputs = sample["inputs"]
         recomputed = formulas.compute(sample["formula_id"], inputs)
+        # 判断放外面：在 f-string 里写同引号的条件表达式只有 3.12+ 能解析（PEP 701），
+        # 项目声明 3.11+，嵌在 f-string 里会让整个模块在 3.11 上 SyntaxError。
+        same = (str(recomputed["value"]) == str(sample["output"]["value"])
+                or abs(Decimal(str(recomputed["value"]))
+                       - Decimal(str(sample["output"]["value"]))) < Decimal("1e-9"))
         doc.say(f"- {sample['calc_id']} {sample['formula_id']}：")
         doc.say(f"  登记输出 {_fmt(sample['output']['value'])}"
                 f"{sample['output']['unit']['code']}｜现场重算 "
                 f"{_fmt(recomputed['value'])}{recomputed['unit']['code']}｜"
-                f"{'一致' if str(recomputed['value']) == str(sample['output']['value'])
-                   or abs(Decimal(str(recomputed['value'])) - Decimal(str(sample['output']['value'])))
-                   < Decimal('1e-9') else '不一致'}")
+                f"{'一致' if same else '不一致'}")
         doc.say(f"  容差 {_fmt(sample['tolerance']['abs'])}｜diff "
                 f"{_fmt(sample['comparison']['diff'])}｜within_tolerance="
                 f"{sample['comparison']['within_tolerance']}")

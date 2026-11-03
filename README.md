@@ -1,5 +1,7 @@
 # 研鉴（FinAudit）
 
+[![tests](https://github.com/lzitong01-wq/finaudit/actions/workflows/tests.yml/badge.svg)](https://github.com/lzitong01-wq/finaudit/actions/workflows/tests.yml)
+
 研报主张逐条核验引擎。输入一份研报及其授权证据材料（年报、公告、报表），输出每条主张的
 核验状态、判定理由、命中规则编号，以及可复算的审计包。
 
