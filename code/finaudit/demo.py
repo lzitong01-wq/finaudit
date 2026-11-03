@@ -180,7 +180,8 @@ def run_demo(fixtures: str | Path, out: str | Path, llm_config=None) -> dict:
     for key, label in (("kl_scan_result", "密钥扫描"), ("alias_check", "化名扫描")):
         doc.say(f"- {label}：{f_outputs.get(key, '见导出事件')}（0 = 零命中）")
     doc.say(f"- 审计结论：{'通过' if summary.get('audit_ok') else '存在违规项，阻断导出'}")
-    doc.say(f"- 交付物：O1 报告 / O2 明细（JSON+CSV）/ O3 审计包（{len(manifest['files'])} 个文件）")
+    doc.say(f"- 交付物：O1 报告 / O2 明细（JSON+CSV）/ O3 审计包"
+            f"（{len(manifest['files'])} 个登记文件，另有清单 manifest.json 自身）")
 
     transcript = out / "demo-transcript.md"
     transcript.write_text("\n".join(doc.lines) + "\n", encoding="utf-8")

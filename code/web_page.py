@@ -3,7 +3,7 @@
 安全约束：渲染一律走 DOM 文本节点，不用 innerHTML 拼接用户可控内容。
 """
 
-PAGE = """<!doctype html><meta charset="utf-8"><title>研鉴 FinAudit</title>
+PAGE = """<!doctype html><meta charset="utf-8"><title>研鉴 FinAudit v%VERSION%</title>
 <style>
 body{font-family:system-ui,"Microsoft YaHei",sans-serif;margin:0;background:#f6f7f9;color:#1f2328}
 .wrap{max-width:1180px;margin:0 auto;padding:24px}
@@ -127,7 +127,7 @@ input[placeholder]{min-width:0;max-width:100%}}
 </style>
 <div class="wrap">
 <h1>研鉴 FinAudit · 研报主张核验</h1>
-<div class="sub">面向金融投研的证据核验工作台：LLM 拆解主张，规则与程序负责核验计算，独立审计后形成可追溯交付。</div>
+<div class="sub">面向金融投研的证据核验工作台：LLM 拆解主张，规则与程序负责核验计算，独立审计后形成可追溯交付。<span style="color:#8c959f">v%VERSION%</span></div>
 
 <div class="card"><h2>A · 任务概览</h2>
   <div class="row"><b>用自己的材料</b></div>

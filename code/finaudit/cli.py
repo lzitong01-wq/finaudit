@@ -6,9 +6,12 @@ import argparse
 import json
 import sys
 
+from . import __version__
+
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="finaudit")
+    parser.add_argument("--version", action="version", version=f"finaudit {__version__}")
     sub = parser.add_subparsers(dest="cmd", required=True)
     run_p = sub.add_parser("run", help="运行 S0–S7 并生成 O1/O2/O3")
     run_p.add_argument("--fixtures", required=True)

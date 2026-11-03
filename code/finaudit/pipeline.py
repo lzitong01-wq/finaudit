@@ -17,7 +17,7 @@ from collections import Counter
 from decimal import Decimal
 from pathlib import Path
 
-from . import contract, formulas, rules
+from . import __version__, contract, formulas, rules
 from .agents import (AuditorAgent, CalculatorAgent, Ctx, ExtractorAgent,
                      ParserAgent, ReporterAgent, RetrieverAgent, Supervisor,
                      VerifierAgent, assert_write, record_handoff)
@@ -417,7 +417,7 @@ def _calc_unroutable(claim: dict, alloc: IdAllocator, text: str, unit: str) -> t
         "claim_id": claim["claim_id"], "crq_id": alloc.next("crq"),
         "formula_id": "无对应公式", "formula_text": "变动量（百分点）",
         "inputs": [], "output": None,
-        "tool": {"name": "finaudit-calc", "version": "0.1.0"},
+        "tool": {"name": "finaudit-calc", "version": __version__},
         "executed_by": "确定性程序", "params": {"side": "report", "unit": unit},
         "tolerance": {"abs": None, "rel": None},
         "result_status": "参数校验失败",
@@ -761,7 +761,7 @@ def build_calculation(claim: dict, rows: list[dict], alloc: IdAllocator, *,
                            "quote": claim.get("claim_text"), "calc_id": None},
                 "comparison": None}}],
             "output": None,
-            "tool": {"name": "finaudit-calc", "version": "0.1.0"},
+            "tool": {"name": "finaudit-calc", "version": __version__},
             "executed_by": "确定性程序", "params": {"side": "report"},
             "tolerance": {"abs": None, "rel": None},
             "result_status": "参数校验失败",
@@ -862,7 +862,7 @@ def build_calculation(claim: dict, rows: list[dict], alloc: IdAllocator, *,
             "formula_text": f"{formula.name}",
             "inputs": [i for i in inputs if i is not None],
             "output": None,
-            "tool": {"name": "finaudit-calc", "version": "0.1.0"},
+            "tool": {"name": "finaudit-calc", "version": __version__},
             "executed_by": "确定性程序",
             "params": {"side": "report"},
             "tolerance": {"abs": None, "rel": None},
@@ -883,7 +883,7 @@ def build_calculation(claim: dict, rows: list[dict], alloc: IdAllocator, *,
         "formula_text": f"{formula.name}",
         "inputs": inputs,
         "output": None,
-        "tool": {"name": "finaudit-calc", "version": "0.1.0"},
+        "tool": {"name": "finaudit-calc", "version": __version__},
         "executed_by": "确定性程序",
         "params": {"side": "report"},
         "tolerance": {"abs": None, "rel": None},
@@ -965,7 +965,7 @@ def _verify_all(claims_entries: list[dict], rows_all: list[dict], blocks_all: li
         if events is not None:
             events.emit("检索调用", "S3", "Agent", "RA3",
                         {"query": claim.get("claim_text", "")[:60],
-                         "candidate_count": len(candidates), "tool_version": "0.1.0"},
+                         "candidate_count": len(candidates), "tool_version": __version__},
                         related_ids={"claim_id": claim["claim_id"]})
 
         calc, calc_error = CalculatorAgent(ctx, events, execute_fn=lambda: build_calculation(
@@ -974,7 +974,7 @@ def _verify_all(claims_entries: list[dict], rows_all: list[dict], blocks_all: li
             calcs.append(calc)
             if events is not None:
                 events.emit("计算", "S5", "程序", "finaudit-calc",
-                            {"formula_id": calc["formula_id"], "tool_version": "0.1.0",
+                            {"formula_id": calc["formula_id"], "tool_version": __version__,
                              "output": str(calc["output"]["value"]) if calc.get("output") else None,
                              "result_status": calc["result_status"]},
                             related_ids={"claim_id": claim["claim_id"],
@@ -1070,7 +1070,7 @@ def _parse_one(m: dict, records: list[dict], fixtures: Path, alloc: IdAllocator,
                                   period_scope=period_scope)
     events.emit("解析调用", "S2", "Agent", "RA2",
                 {"工具名": "md-parser" if path.suffix.lower() != ".pdf" else "pdf-parser",
-                 "版本": "0.1.0",
+                 "版本": __version__,
                  "文件": path.name, "字节数": path.stat().st_size,
                  "编码": encoding,
                  "页数": m.get("page_count"),
@@ -1296,7 +1296,7 @@ def _run_stages(ctx: Ctx, events=None) -> dict:
         if not report_encoding.startswith("utf-8"):
             # 研报正文编码不是 UTF-8：留痕，避免乱码无声进入主张拆解
             events.emit("解析调用", "S4", "Agent", "RA4",
-                        {"工具名": "md-parser", "版本": "0.1.0",
+                        {"工具名": "md-parser", "版本": __version__,
                          "文件": report_path.name, "编码": report_encoding},
                         related_ids={"material_id": report_id})
 

@@ -57,6 +57,7 @@ FINAUDIT_OCR_TEST=1 bash demo.sh
 | `python -m finaudit.cli verify --out ../out/demo01` | 按 manifest 复算输出文件哈希，不一致返回非零 |
 | `python -m finaudit.cli doctor --preset modelscope` | 模型连通性自检（把 401/402/403/404/429 翻译成结论） |
 | `python -m unittest discover -s tests` | 全量测试（OCR 3 项受 `FINAUDIT_OCR_TEST` 门控） |
+| `python -m finaudit.cli --version` | 打印版本号（与 README、B-versions.json 同源） |
 
 内置夹具四组：`demo01`（Markdown）、`demo01_pdf`（PDF 文本层）、`demo01_scan`（扫描件）、
 `bench`（300 条规模基准）。
@@ -125,7 +126,7 @@ python -m finaudit.cli run --fixtures fixtures/demo01 --out ../out/demo01_llm --
 | `o3/B-versions.json` | 规则版本、公式版本、工具版本、运行配置 |
 | `o3/C-events.jsonl` | 全量审计事件流 |
 | `o3/D-calculations.json` | 确定性计算记录（输入、公式、输出、容差、差值） |
-| `o3/E-reviews.json` | 导出时已存在的人工复核记录（通常为空，复核一般在导出之后） |
+| `o3/E-reviews.json` | 导出时已存在的人工复核记录（复核在导出之后进行，故常为空；重跑时把保留的 `review-log.jsonl` 一并收进来，无法解析的行只计数不中断导出） |
 | `o3/review-log.jsonl` | 界面人工复核留痕，运行后追加；无人复核时不生成 |
 | `o3/F-outputs.json` | 输出文件哈希与扫描结果 |
 | `o3/G-reproduce.md` | 复现说明（按实际运行配置生成） |
@@ -186,7 +187,7 @@ code/
   webui.py                   界面服务与接口
   web_page.py                页面模板（单文件 HTML + 内联 CSS/JS）
   fixtures/                  4 组夹具：demo01 / demo01_pdf / demo01_scan / bench
-  tests/                     20 个测试文件（项数以命令输出为准）
+  tests/                     21 个测试文件（项数以命令输出为准）
   tools/                     夹具生成器 + 三套浏览器探针
   demo.sh / demo.ps1         一键复现脚本
   requirements.txt           可选依赖

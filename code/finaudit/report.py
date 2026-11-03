@@ -1,7 +1,7 @@
 """O1/O2/O3 交付物生成：人读报告、机读明细与审计包。
 
 - O2：manifest + items（Claim/VRF/Evidence/Calculation）；CSV 展平视图。
-- O1：人读核查报告（S0–S9 暂定结构，官方模板未到位，标"待确认"）。
+- O1：人读核查报告（运行配置 / 结论摘要 / 逐项核验 / 专项分区 / 计算附录 / 边界说明 / 检查与放行）。
 - O3：A–G 组审计包目录 + manifest（哈希清单）。
 Decimal 在 JSON 中序列化为字符串以保精度（在 G 组复现说明中声明）。
 """
@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
-from . import formulas
+from . import __version__, formulas
 
 CONTRACT_VERSION = "finaudit-data-contract-v1"
 STATUS_ORDER = ["通过", "错误", "冲突", "证据不足", "低置信", "需人工复核", "不适用", "待核验"]
@@ -335,6 +335,37 @@ def write_o1(out: Path, task: dict, items: list[dict], severity_map: dict,
     return path
 
 
+def _collect_reviews(log_path: Path) -> dict:
+    """把已有的人工复核留痕并入 E 组。
+
+    `o3/review-log.jsonl` 跨运行累积、重跑前不清空；导出时若已有记录，包里 E 组
+    就得照实带上——否则同一个包里 review-log 写着 N 条复核、E-reviews 却说「无」，
+    自相矛盾。坏行只计数不抛错：一行损坏不该让整份交付物生成失败。
+    """
+    records: list[dict] = []
+    unparsed = 0
+    if log_path.exists():
+        for line in log_path.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                unparsed += 1
+                continue
+            if isinstance(rec, dict):
+                records.append(rec)
+            else:
+                unparsed += 1
+    note = ("导出时已存在的人工复核记录；复核一般在导出之后进行，故常为空。"
+            "本组只读留痕，不改变判定状态。")
+    if unparsed:
+        note += f"另有 {unparsed} 行无法解析，已跳过并计数。"
+    return {"manual_reviews": records, "count": len(records),
+            "unparsed_lines": unparsed, "note": note}
+
+
 def write_o3(out: Path, task: dict, records: list[dict], items: list[dict],
              events, blocks: list[dict], rows: list[dict], materials: list[dict],
              outputs: dict, run_config: dict | None = None) -> dict:
@@ -375,9 +406,9 @@ def write_o3(out: Path, task: dict, records: list[dict], items: list[dict],
     rule_impl = sum(1 for r in rules_mod.RULES.values() if r.get("implemented"))
     files["B-versions.json"] = _dump(o3 / "B-versions.json", {
         "schema_contract": CONTRACT_VERSION,
-        "tools": [{"name": "finaudit", "version": "0.1.0"},
-                  {"name": "md-parser", "version": "0.1.0"},
-                  {"name": "finaudit-calc", "version": "0.1.0"}],
+        "tools": [{"name": "finaudit", "version": __version__},
+                  {"name": "md-parser", "version": __version__},
+                  {"name": "finaudit-calc", "version": __version__}],
         # 条数由规则/公式表算出，不写死；「库内总数」与「本次调用」分开列
         "rules_version": f"{rule_total} 条（已实现 {rule_impl} 条）",
         "formulas_version": f"{len(formulas.FORMULAS)} 条（公式库总数）",
@@ -392,10 +423,8 @@ def write_o3(out: Path, task: dict, records: list[dict], items: list[dict],
 
     calcs = [c for it in items for c in (it.get("calculations") or [])]
     files["D-calculations.json"] = _dump(o3 / "D-calculations.json", {"calculations": calcs})
-    files["E-reviews.json"] = _dump(o3 / "E-reviews.json", {
-        "manual_reviews": [],
-        "note": "MVP 不含人工复核记录；P2–P6 由测试用例在实现环境执行。",
-    })
+    files["E-reviews.json"] = _dump(o3 / "E-reviews.json",
+                                    _collect_reviews(o3 / "review-log.jsonl"))
     files["F-outputs.json"] = _dump(o3 / "F-outputs.json", {
         "o1": outputs.get("o1_hash"), "o2": outputs.get("o2_hash"),
         "csv": outputs.get("csv_hash"),
@@ -422,7 +451,7 @@ def write_o3(out: Path, task: dict, records: list[dict], items: list[dict],
         "\n".join([
             "# 复现说明（G 组）",
             "",
-            f"1. 环境：Python {py_ver}（3.11+ 兼容）。" + dep_note + "。",
+            f"1. 环境：Python {py_ver}（3.11+ 兼容），finaudit {__version__}。" + dep_note + "。",
             f"2. 运行：`cd code && python -m finaudit.cli run --fixtures fixtures/{fixture_name} "
             f"--out ../out/{fixture_name}`（演示记录：`python -m finaudit.demo "
             f"--fixtures fixtures/{fixture_name} --out ../out/{fixture_name}`，输出 D0–D8 九步）",
@@ -435,10 +464,11 @@ def write_o3(out: Path, task: dict, records: list[dict], items: list[dict],
             "过程性元规则（R-GEN-01/06/07、R-TIE-04）以守卫函数暴露，未参与判定链。",
             "7. 已知差异与局限：",
             llm_line,
-            "   - 事实/证据账本与人工复核记录为空（I3 之后实现）。",
+            "   - 人工复核只留痕、不回写判定状态（`o3/review-log.jsonl`，重跑保留并并入 E 组）；"
+            "自动回退重核尚未实现。",
             "   - 表格解析依赖「一行一条记录」版式；跨行合并单元格记解析失败，不猜内容。",
-            "   - 规模基准为构造性金标准（300 条十二族），非全量评测集 ≥200 条全链路口径；"
-            "引擎准确率与真实模型端到端表现为两套口径，分开报告。",
+            "   - 规模基准是构造性金标准（300 条十二族），不等于真实研报分布，"
+            "指标只作回归参照；引擎准确率与真实模型端到端表现是两套口径，分开报告。",
             "",
         ]), encoding="utf-8")
     files["G-reproduce.md"] = _hash(g_path)

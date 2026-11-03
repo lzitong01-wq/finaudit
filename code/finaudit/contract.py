@@ -1,6 +1,6 @@
 """轻量契约校验（数据契约第 6 节子集）。
 
-MVP 只校验引擎实际产出的对象：Claim / Calculation / VerificationResult / AuditEvent /
+本模块只校验引擎实际产出的对象：Claim / Calculation / VerificationResult / AuditEvent /
 EvidenceCandidate / MaterialRecord / DocumentBlock / Fact。校验项：必填、状态枚举、
 事件类型枚举、编号 pattern、payload 禁敏键名、白名单外字段。
 """

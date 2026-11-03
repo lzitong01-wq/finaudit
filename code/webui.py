@@ -38,6 +38,7 @@ UPLOADS = OUT / "uploads"           # 用户上传材料生成的任务目录（
 sys.path.insert(0, str(ROOT))
 
 from web_page import PAGE  # noqa: E402  （页面模板依赖 ROOT 入 sys.path）
+from finaudit import __version__ as APP_VERSION  # noqa: E402  版本号唯一来源
 
 # ---------------------------------------------------------------- 上传限制
 ALLOWED_SUFFIX = (".pdf", ".md", ".markdown", ".txt")
@@ -830,7 +831,7 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(body)
             return
-        body = PAGE.encode("utf-8")
+        body = PAGE.replace("%VERSION%", APP_VERSION).encode("utf-8")
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
