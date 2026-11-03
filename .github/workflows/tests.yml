@@ -1,0 +1,35 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: 安装可选依赖
+        run: pip install pypdf
+
+      - name: 单元测试
+        working-directory: code
+        run: python -m unittest discover -s tests
+
+      - name: 端到端核验 + 审计包校验
+        working-directory: code
+        run: |
+          python -m finaudit.cli run --fixtures fixtures/demo01 --out ../out/demo01
+          python -m finaudit.cli verify --out ../out/demo01
