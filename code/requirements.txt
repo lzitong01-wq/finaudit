@@ -1,0 +1,10 @@
+# 核心运行：零第三方依赖（Markdown 材料模式，仅标准库）
+#
+# PDF 文本层（可选）：pypdf
+pypdf>=6.0
+#
+# 扫描件 OCR（可选）：RapidOCR（PP-OCR 模型，ONNX 推理）
+rapidocr_onnxruntime>=1.2
+#
+# 仅在重新生成 PDF / 扫描件测试夹具时需要（tools/），运行时不需要
+reportlab>=4.0

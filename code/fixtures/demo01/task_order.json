@@ -1,0 +1,28 @@
+{
+  "task_id": "TSK-0001",
+  "contract_version": "finaudit-data-contract-v1",
+  "subject_alias": "甲企业",
+  "period_scope": {
+    "kind": "期间",
+    "start": "2024-01-01",
+    "end": "2024-12-31",
+    "label": "2024年度"
+  },
+  "data_cutoff": "2025-04-30",
+  "materials": [
+    {
+      "source_file_ref": "MAT-0001-研报.md",
+      "role": "待核验研报"
+    },
+    {
+      "source_file_ref": "MAT-0002-年报.md",
+      "role": "证据材料"
+    },
+    {
+      "source_file_ref": "MAT-0003-公告.md",
+      "role": "证据材料"
+    }
+  ],
+  "boundary_statement": "仅核查本任务授权材料范围内的可核验主张",
+  "missing_items": []
+}

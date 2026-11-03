@@ -1,0 +1,11 @@
+# 默认按文本处理，检出用 LF：demo.sh 在 Linux/macOS 下靠 LF 才能执行
+* text=auto eol=lf
+
+# Windows 脚本必须 CRLF
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# 二进制：不做换行转换与文本 diff
+*.pdf binary
+*.png binary
+*.jpg binary

@@ -1,0 +1,536 @@
+[
+  {
+    "claim": {
+      "claim_id": "CLM-0001",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第1条"},
+      "claim_text": "甲企业2024年度营业收入为1,285.0亿元",
+      "context_quote": "甲企业2024年度营业收入为1,285.0亿元。",
+      "claim_type": "数值型",
+      "judgment_type": "事实",
+      "numeric": {
+        "value": 1285.0,
+        "value_text": "1,285.0亿元",
+        "value_kind": "精确值",
+        "entity": "甲企业",
+        "unit": {"code": "亿元"},
+        "period": {"kind": "期间", "start": "2024-01-01", "end": "2024-12-31", "label": "2024年度"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"}
+      },
+      "reference": null,
+      "unknown_fields": ["口径"],
+      "status": "待核验"
+    },
+    "gt_status": "通过",
+    "gt_rule_ids": ["R-NUM-01"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0002",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第2条"},
+      "claim_text": "甲企业2024年度毛利率为42%",
+      "context_quote": "甲企业2024年度毛利率为42%。",
+      "claim_type": "数值型",
+      "judgment_type": "计算",
+      "numeric": {
+        "value": 42,
+        "value_text": "42%",
+        "value_kind": "精确值",
+        "entity": "甲企业",
+        "unit": {"code": "%"},
+        "period": {"kind": "期间", "start": "2024-01-01", "end": "2024-12-31", "label": "2024年度"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"}
+      },
+      "reference": null,
+      "unknown_fields": ["口径"],
+      "status": "待核验"
+    },
+    "gt_status": "错误",
+    "gt_rule_ids": ["R-FRM-01", "R-FRM-02", "R-FRM-05"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0003",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第3条"},
+      "claim_text": "甲企业2024年度营业收入同比增长12%",
+      "context_quote": "甲企业2024年度营业收入同比增长12%。",
+      "claim_type": "数值型",
+      "judgment_type": "计算",
+      "numeric": {
+        "value": 12,
+        "value_text": "12%",
+        "value_kind": "精确值",
+        "entity": "甲企业",
+        "unit": {"code": "%"},
+        "period": {"kind": "期间", "start": "2024-01-01", "end": "2024-12-31", "label": "2024年度"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"},
+        "comparison": {
+          "type": "同比",
+          "baseline_period": {"kind": "期间", "start": "2023-01-01", "end": "2023-12-31", "label": "2023年度"},
+          "baseline_value": null,
+          "baseline_source": null
+        }
+      },
+      "reference": null,
+      "unknown_fields": ["口径"],
+      "status": "待核验"
+    },
+    "gt_status": "通过",
+    "gt_rule_ids": ["R-CMP-02"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0004",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第4条"},
+      "claim_text": "甲企业2024年度营业收入为1,285.0万元",
+      "context_quote": "甲企业2024年度营业收入为1,285.0万元。",
+      "claim_type": "数值型",
+      "judgment_type": "事实",
+      "numeric": {
+        "value": 1285.0,
+        "value_text": "1,285.0万元",
+        "value_kind": "精确值",
+        "entity": "甲企业",
+        "unit": {"code": "万元"},
+        "period": {"kind": "期间", "start": "2024-01-01", "end": "2024-12-31", "label": "2024年度"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"}
+      },
+      "reference": null,
+      "unknown_fields": ["口径"],
+      "status": "待核验"
+    },
+    "gt_status": "错误",
+    "gt_rule_ids": ["R-UNI-04"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0005",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第5条"},
+      "claim_text": "甲企业2024年末资产负债率为60%",
+      "context_quote": "甲企业2024年末资产负债率为60%。",
+      "claim_type": "数值型",
+      "judgment_type": "计算",
+      "numeric": {
+        "value": 60,
+        "value_text": "60%",
+        "value_kind": "精确值",
+        "entity": "甲企业",
+        "unit": {"code": "%"},
+        "period": {"kind": "时点", "point": "2024-12-31", "label": "2024年末"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"}
+      },
+      "reference": null,
+      "unknown_fields": ["口径"],
+      "status": "待核验"
+    },
+    "gt_status": "通过",
+    "gt_rule_ids": ["R-FRM-01", "R-FRM-02", "R-FRM-05"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0006",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第6条"},
+      "claim_text": "甲企业2024年末存货较年初增长10%",
+      "context_quote": "甲企业2024年末存货较年初增长10%。",
+      "claim_type": "数值型",
+      "judgment_type": "计算",
+      "numeric": {
+        "value": 10,
+        "value_text": "10%",
+        "value_kind": "精确值",
+        "entity": "甲企业",
+        "unit": {"code": "%"},
+        "period": {"kind": "时点", "point": "2024-12-31", "label": "2024年末"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"},
+        "comparison": {
+          "type": "较年初",
+          "baseline_period": {"kind": "时点", "point": "2023-12-31", "label": "2023年末"},
+          "baseline_value": null,
+          "baseline_source": null
+        }
+      },
+      "reference": null,
+      "unknown_fields": ["口径"],
+      "status": "待核验"
+    },
+    "gt_status": "通过",
+    "gt_rule_ids": ["R-CMP-02"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0007",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第7条"},
+      "claim_text": "甲企业子公司A 2024年度营业收入为58.0亿元",
+      "context_quote": "甲企业子公司A 2024年度营业收入为58.0亿元。",
+      "claim_type": "引用型",
+      "judgment_type": "事实",
+      "numeric": null,
+      "reference": {
+        "cited_subject": "甲企业子公司A",
+        "cited_text": "2024年度营业收入58.0亿元",
+        "cited_locator": null
+      },
+      "unknown_fields": [],
+      "status": "待核验"
+    },
+    "gt_status": "证据不足",
+    "gt_rule_ids": ["R-ENT-03"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0008",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第8条"},
+      "claim_text": "甲企业2024年度营业收入为1,302.0亿元",
+      "context_quote": "甲企业2024年度营业收入为1,302.0亿元。",
+      "claim_type": "数值型",
+      "judgment_type": "事实",
+      "numeric": {
+        "value": 1302.0,
+        "value_text": "1,302.0亿元",
+        "value_kind": "精确值",
+        "entity": "甲企业",
+        "unit": {"code": "亿元"},
+        "period": {"kind": "期间", "start": "2024-01-01", "end": "2024-12-31", "label": "2024年度"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"}
+      },
+      "reference": null,
+      "unknown_fields": ["口径"],
+      "status": "待核验"
+    },
+    "gt_status": "冲突",
+    "gt_rule_ids": ["R-GEN-05", "R-GEN-08"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0009",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第9条"},
+      "claim_text": "甲企业2024年度营业收入约1,200亿元",
+      "context_quote": "甲企业2024年度营业收入约1,200亿元。",
+      "claim_type": "数值型",
+      "judgment_type": "事实",
+      "numeric": {
+        "value": 1200,
+        "value_text": "约1,200亿元",
+        "value_kind": "约数",
+        "entity": "甲企业",
+        "unit": {"code": "亿元"},
+        "period": {"kind": "期间", "start": "2024-01-01", "end": "2024-12-31", "label": "2024年度"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"}
+      },
+      "reference": null,
+      "unknown_fields": ["口径"],
+      "status": "待核验"
+    },
+    "gt_status": "需人工复核",
+    "gt_rule_ids": ["R-NUM-03"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0010",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第10条"},
+      "claim_text": "甲企业2024年度研发投入为45.6亿元",
+      "context_quote": "据公告（扫描件）载明，甲企业2024年度研发投入为45.6亿元。",
+      "claim_type": "数值型",
+      "judgment_type": "事实",
+      "numeric": {
+        "value": 45.6,
+        "value_text": "45.6亿元",
+        "value_kind": "精确值",
+        "entity": "甲企业",
+        "unit": {"code": "亿元"},
+        "period": {"kind": "期间", "start": "2024-01-01", "end": "2024-12-31", "label": "2024年度"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"}
+      },
+      "reference": null,
+      "unknown_fields": ["口径"],
+      "status": "待核验"
+    },
+    "gt_status": "需人工复核",
+    "gt_rule_ids": ["R-GEN-03"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0011",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第11条"},
+      "claim_text": "甲企业自2024年度起变更收入确认政策，变更后毛利率提升",
+      "context_quote": "甲企业自2024年度起变更收入确认政策，变更后毛利率提升。",
+      "claim_type": "定性表述型",
+      "judgment_type": "事实",
+      "numeric": null,
+      "reference": null,
+      "unknown_fields": [],
+      "status": "待核验"
+    },
+    "gt_status": "需人工复核",
+    "gt_rule_ids": ["R-ACC-03"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0012",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第12条"},
+      "claim_text": "预计甲企业2026年度营业收入为1,500.0亿元",
+      "context_quote": "预计甲企业2026年度营业收入为1,500.0亿元。",
+      "claim_type": "数值型",
+      "judgment_type": "推论",
+      "numeric": {
+        "value": 1500.0,
+        "value_text": "1,500.0亿元",
+        "value_kind": "精确值",
+        "entity": "甲企业",
+        "unit": {"code": "亿元"},
+        "period": {"kind": "期间", "start": "2026-01-01", "end": "2026-12-31", "label": "2026年度"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"}
+      },
+      "reference": null,
+      "unknown_fields": ["口径"],
+      "status": "待核验"
+    },
+    "gt_status": "不适用",
+    "gt_rule_ids": ["R-ASM-02"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0013",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第13条"},
+      "claim_text": "甲企业2024年度营业收入为1,342.3亿元",
+      "context_quote": "据甲企业2024年年度报告第68页合并利润表，甲企业2024年度营业收入为1,342.3亿元。",
+      "claim_type": "引用型",
+      "judgment_type": "事实",
+      "numeric": {
+        "value": 1342.3,
+        "value_text": "1,342.3亿元",
+        "value_kind": "精确值",
+        "entity": "甲企业",
+        "unit": {"code": "亿元"},
+        "period": {"kind": "期间", "start": "2024-01-01", "end": "2024-12-31", "label": "2024年度"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"}
+      },
+      "reference": {
+        "cited_subject": "甲企业",
+        "cited_text": "2024年度营业收入1,342.3亿元",
+        "cited_locator": {"type": "表格坐标", "page": 68, "table_ref": "合并利润表", "value": "P68/合并利润表/营业收入行"}
+      },
+      "unknown_fields": ["口径"],
+      "status": "待核验"
+    },
+    "gt_status": "错误",
+    "gt_rule_ids": ["R-CIT-02"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0014",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "表格坐标", "page": 3, "table_ref": "表1", "value": "P3/表1/第1-3行"},
+      "claim_text": "甲企业表1列示资产合计100.0亿元、负债合计60.0亿元、所有者权益合计35.0亿元，资产合计等于负债合计加所有者权益合计",
+      "context_quote": "甲企业表1列示资产合计100.0亿元、负债合计60.0亿元、所有者权益合计35.0亿元，资产合计等于负债合计加所有者权益合计。",
+      "claim_type": "数值型",
+      "judgment_type": "计算",
+      "numeric": {
+        "value": 100.0,
+        "value_text": "100.0亿元",
+        "value_kind": "精确值",
+        "entity": "甲企业",
+        "unit": {"code": "亿元"},
+        "period": {"kind": "时点", "point": "2024-12-31", "label": "2024年末"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"}
+      },
+      "reference": null,
+      "unknown_fields": ["口径"],
+      "status": "待核验"
+    },
+    "gt_status": "错误",
+    "gt_rule_ids": ["R-TIE-01"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0015",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第15条"},
+      "claim_text": "甲企业某新业务板块2024年度收入较基期增长20%",
+      "context_quote": "甲企业某新业务板块2024年度收入较基期增长20%，基期收入为0。",
+      "claim_type": "数值型",
+      "judgment_type": "计算",
+      "numeric": {
+        "value": 20,
+        "value_text": "20%",
+        "value_kind": "精确值",
+        "entity": "甲企业",
+        "unit": {"code": "%"},
+        "period": {"kind": "期间", "start": "2024-01-01", "end": "2024-12-31", "label": "2024年度"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"},
+        "comparison": {
+          "type": "其他",
+          "baseline_period": {"kind": "期间", "start": "2023-01-01", "end": "2023-12-31", "label": "2023年度"},
+          "baseline_value": 0,
+          "baseline_source": null
+        }
+      },
+      "reference": null,
+      "unknown_fields": ["口径"],
+      "status": "待核验"
+    },
+    "gt_status": "需人工复核",
+    "gt_rule_ids": ["R-FRM-04"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0016",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第16条"},
+      "claim_text": "甲企业2024年度营业收入为1,285.0",
+      "context_quote": "甲企业2024年度营业收入为1,285.0（原文如此，未标注单位）。",
+      "claim_type": "数值型",
+      "judgment_type": "事实",
+      "numeric": {
+        "value": 1285.0,
+        "value_text": "1,285.0",
+        "value_kind": "精确值",
+        "entity": "甲企业",
+        "unit": {"code": "unknown"},
+        "period": {"kind": "期间", "start": "2024-01-01", "end": "2024-12-31", "label": "2024年度"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"}
+      },
+      "reference": null,
+      "unknown_fields": ["单位", "口径"],
+      "status": "待核验"
+    },
+    "gt_status": "低置信",
+    "gt_rule_ids": ["R-UNI-02"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0017",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": null,
+      "claim_text": "甲企业2024年度营业收入为1,285.0亿元",
+      "context_quote": "本简报转引公开摘要：甲企业2024年度营业收入为1,285.0亿元。",
+      "claim_type": "数值型",
+      "judgment_type": "事实",
+      "numeric": {
+        "value": 1285.0,
+        "value_text": "1,285.0亿元",
+        "value_kind": "精确值",
+        "entity": "甲企业",
+        "unit": {"code": "亿元"},
+        "period": {"kind": "期间", "start": "2024-01-01", "end": "2024-12-31", "label": "2024年度"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"}
+      },
+      "reference": null,
+      "unknown_fields": ["原文定位", "口径"],
+      "status": "待核验"
+    },
+    "gt_status": "待核验",
+    "gt_rule_ids": ["R-GEN-02"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0018",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第17条"},
+      "claim_text": "甲企业管理层优秀，发展前景广阔",
+      "context_quote": "甲企业管理层优秀，发展前景广阔。",
+      "claim_type": "定性表述型",
+      "judgment_type": "观点",
+      "numeric": null,
+      "reference": null,
+      "unknown_fields": [],
+      "status": "待核验"
+    },
+    "gt_status": "不适用",
+    "gt_rule_ids": []
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0019",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第18条"},
+      "claim_text": "甲企业主营业务为XX设备制造",
+      "context_quote": "甲企业主营业务为XX设备制造。",
+      "claim_type": "定性表述型",
+      "judgment_type": "事实",
+      "numeric": null,
+      "reference": null,
+      "unknown_fields": [],
+      "status": "待核验"
+    },
+    "gt_status": "通过",
+    "gt_rule_ids": ["R-GEN-09"]
+  },
+  {
+    "claim": {
+      "claim_id": "CLM-0020",
+      "task_id": "TSK-0001",
+      "contract_version": "finaudit-data-contract-v1",
+      "report_material_id": "MAT-0001",
+      "report_locator": {"type": "页码", "page": 3, "value": "P3/三、待核验主张原文/第19条"},
+      "claim_text": "甲企业2024年度净利润为12.9亿美元",
+      "context_quote": "甲企业2024年度净利润为12.9亿美元。",
+      "claim_type": "数值型",
+      "judgment_type": "事实",
+      "numeric": {
+        "value": 12.9,
+        "value_text": "12.9亿美元",
+        "value_kind": "精确值",
+        "entity": "甲企业",
+        "unit": {"code": "亿美元"},
+        "period": {"kind": "期间", "start": "2024-01-01", "end": "2024-12-31", "label": "2024年度"},
+        "basis": {"consolidation": "合并报表", "accounting": "unknown"}
+      },
+      "reference": null,
+      "unknown_fields": ["口径"],
+      "status": "待核验"
+    },
+    "gt_status": "证据不足",
+    "gt_rule_ids": ["R-UNI-03"]
+  }
+]
