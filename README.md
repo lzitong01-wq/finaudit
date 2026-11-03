@@ -181,7 +181,9 @@ Calculation 逐个校验）全部通过，才判「放行」；任一不合格�
 
 ```
 README.md                    本文件
+LICENSE                      MIT 许可证
 启动研鉴.bat                  Windows 图形界面启动
+.github/workflows/tests.yml   CI：3.11 / 3.13 / 3.14 三档跑测试与端到端
 code/
   finaudit/                  22 个模块（见第 5 节）
   webui.py                   界面服务与接口
@@ -250,6 +252,8 @@ out/                         运行输出（每次运行一个独立目录）
 | `reportlab` | BSD | 仅生成测试夹具，运行时不需要 | 开发时 |
 
 核心判定链路只用 Python 标准库。`onnxruntime` 等传递依赖的许可证随发行包附带。
+
+本项目本体以 MIT 许可证发布，全文见 `LICENSE`。上述第三方依赖各自保留其原始许可证。
 
 ---
 
